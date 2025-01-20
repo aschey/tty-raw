@@ -1,0 +1,9 @@
+[package]
+name = "tty-raw"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.26", features = ["derive"] }
+crossterm = "0.28.1"
+terminput = { git = "https://github.com/aschey/terminput" }
