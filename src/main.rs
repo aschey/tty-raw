@@ -53,7 +53,7 @@ struct Options {
 fn main() -> io::Result<()> {
     let options = Options::parse();
 
-    enable_raw_mode().unwrap();
+    enable_raw_mode()?;
     let mut stdout = io::stdout().lock();
     let supports_keyboard_enhancement = matches!(supports_keyboard_enhancement(), Ok(true));
 
@@ -89,6 +89,8 @@ fn main() -> io::Result<()> {
 
     let mut stdin = std::io::stdin().lock();
 
+    writeln!(stdout, "Press 'q' twice to quit\n")?;
+    execute!(stdout, MoveToColumn(0))?;
     let mut q_key_count = 0;
     loop {
         let mut buf = [0; 4096];
@@ -99,7 +101,7 @@ fn main() -> io::Result<()> {
             if esc_seq_count > 1 {
                 while esc_seq_count > 1 {
                     let next_esc = read_bytes[1..].iter().position(|b| *b == b'\x1B').unwrap() + 1;
-                    execute!(stdout, MoveToColumn(0)).unwrap();
+                    execute!(stdout, MoveToColumn(0))?;
 
                     if let Some(Event::Key(key_event)) =
                         write_sequence(&mut stdout, &read_bytes[..next_esc])?
@@ -169,7 +171,7 @@ fn write_sequence(stdout: &mut StdoutLock, read_bytes: &[u8]) -> io::Result<Opti
     let event = parse_event(read_bytes).ok().flatten();
     if let Some(event) = &event {
         writeln!(stdout, "{event:?}")?;
-        execute!(stdout, MoveToColumn(0)).unwrap();
+        execute!(stdout, MoveToColumn(0))?;
     }
     Ok(event)
 }
