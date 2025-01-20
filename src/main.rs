@@ -13,24 +13,41 @@ use crossterm::{execute, queue};
 use terminput::parser::parse_event;
 use terminput::{Event, KeyCode, KeyEventKind};
 
-#[derive(Parser)]
+/// Report raw terminal inputs.
+#[derive(Parser, Debug)]
+#[command(version, about)]
 struct Options {
+    /// keyboard enhancement flag - disambiguate escape codes
     #[arg(short, long)]
     disambiguate: bool,
+
+    /// keyboard enhancement flag - report all keys as escape codes
     #[arg(short = 'e', long)]
     all_escape: bool,
+
+    /// keyboard enhancement flag - report alternate keys
     #[arg(short, long)]
     alternate_keys: bool,
+
+    /// keyboard enhancement flag - report event types
     #[arg(short = 't', long)]
     event_types: bool,
-    #[arg(short, long)]
-    bracketed_paste: bool,
-    #[arg(short, long)]
-    mouse: bool,
-    #[arg(short, long)]
-    focus: bool,
+
+    /// enable all kitty keyboard enhancements
     #[arg(short = 'k', long)]
     all_kitty: bool,
+
+    /// enable bracketed paste
+    #[arg(short, long)]
+    bracketed_paste: bool,
+
+    /// report mouse events
+    #[arg(short, long)]
+    mouse: bool,
+
+    /// report focus change events
+    #[arg(short, long)]
+    focus: bool,
 }
 
 fn main() -> io::Result<()> {
